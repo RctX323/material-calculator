@@ -13,7 +13,6 @@ import { brand } from '@/constants/theme';
 import { ResultCard } from '@/components/ResultCard';
 import { useCalcStore } from '@/lib/calcStore';
 import { costPerYardFromUnit } from '@/hooks/useWeightUnit';
-import { useCustomerInfo } from '@/lib/payments';
 
 /**
  * Page 1 of the result flow.
@@ -23,7 +22,6 @@ import { useCustomerInfo } from '@/lib/payments';
  */
 export default function ResultScreen() {
   const pending = useCalcStore(s => s.pending);
-  const { isPro } = useCustomerInfo();
 
   // Safety: if a user lands here with no pending result (e.g. deep link, refresh),
   // bounce them back to the calculator instead of showing a blank screen.
@@ -86,17 +84,11 @@ export default function ResultScreen() {
           onSave={onSave}
         />
 
-        {/* Truck Logistics CTA — Pro feature, shows paywall if not Pro */}
+        {/* Truck Logistics — included with subscription */}
         <TouchableOpacity
           style={styles.logisticsCta}
           activeOpacity={0.85}
-          onPress={() => {
-            if (isPro) {
-              router.push('/logistics' as never);
-            } else {
-              router.push('/paywall' as never);
-            }
-          }}
+          onPress={() => router.push('/logistics' as never)}
         >
           <View style={styles.logisticsCtaLeft}>
             <View style={styles.logisticsCtaIcon}>
@@ -104,19 +96,10 @@ export default function ResultScreen() {
             </View>
             <View style={styles.logisticsCtaText}>
               <Text style={styles.logisticsCtaTitle}>TRUCK LOGISTICS</Text>
-              <Text style={styles.logisticsCtaSub}>
-                {isPro ? 'Plan loads · efficient or personal' : 'Pro feature · tap to unlock'}
-              </Text>
+              <Text style={styles.logisticsCtaSub}>Plan loads · efficient or personal</Text>
             </View>
           </View>
-          {isPro ? (
-            <Ionicons name="chevron-forward" size={22} color={brand.textTertiary} />
-          ) : (
-            <View style={styles.logisticsProBadge}>
-              <Ionicons name="diamond" size={12} color="#000" />
-              <Text style={styles.logisticsProBadgeText}>PRO</Text>
-            </View>
-          )}
+          <Ionicons name="chevron-forward" size={22} color={brand.textTertiary} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
