@@ -1,10 +1,13 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Platform } from 'react-native';
+import { Platform, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BlinkProvider, createTamagui, tamaguiDefaultConfig, Theme, BlinkToastProvider } from '@blinkdotnew/mobile-ui';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { useCustomerInfo, initializeRevenueCat } from '@/lib/payments';
+import { Paywall } from '@/components/Paywall';
+import { brand } from '@/constants/theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,12 +41,45 @@ function WebStyleReset() {
   );
 }
 
+/**
+ * Subscription gate.
+ *
+ * Single-tier hard paywall: the entire app is locked until the user has an
+ * active subscription. Three states:
+ *   1. loading  -> splash spinner while RevenueCat resolves customer info
+ *   2. no access -> full-screen Paywall (no dismiss)
+ *   3. access   -> the real app (tab navigator + flows)
+ *
+ * On web there are no purchases; we show the app so the marketing/preview site
+ * still renders, but native purchase flows are unavailable there.
+ */
+function Gate({ children }: { children: React.ReactNode }) {
+  const { hasAccess, isLoading } = useCustomerInfo();
+
+  // Web is a preview surface with no IAP — don't lock it behind a paywall.
+  if (Platform.OS === 'web') return <>{children}</>;
+
+  if (isLoading) {
+    return (
+      <View style={styles.splash}>
+        <ActivityIndicator size="large" color={brand.orange} />
+      </View>
+    );
+  }
+
+  if (!hasAccess) {
+    return <Paywall />;
+  }
+
+  return <>{children}</>;
+}
+
 export default function RootLayout() {
   useFrameworkReady();
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-      import('@/lib/payments').then(m => m.initializeRevenueCat()).catch(() => {});
+      initializeRevenueCat().catch(() => {});
     }
   }, []);
 
@@ -53,41 +89,35 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <BlinkToastProvider>
             <WebStyleReset />
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen
-                name="calculating"
-                options={{
-                  animation: 'fade',
-                  animationDuration: 180,
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="result"
-                options={{
-                  animation: 'fade',
-                  animationDuration: 220,
-                }}
-              />
-              <Stack.Screen
-                name="logistics"
-                options={{
-                  animation: 'slide_from_right',
-                  animationDuration: 240,
-                }}
-              />
-              <Stack.Screen
-                name="paywall"
-                options={{
-                  animation: 'slide_from_bottom',
-                  animationDuration: 300,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
+            <Gate>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen
+                  name="calculating"
+                  options={{
+                    animation: 'fade',
+                    animationDuration: 180,
+                    gestureEnabled: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="result"
+                  options={{
+                    animation: 'fade',
+                    animationDuration: 220,
+                  }}
+                />
+                <Stack.Screen
+                  name="logistics"
+                  options={{
+                    animation: 'slide_from_right',
+                    animationDuration: 240,
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </Gate>
             <StatusBar style="light" backgroundColor="#0A0A0A" />
           </BlinkToastProvider>
         </QueryClientProvider>
@@ -95,3 +125,12 @@ export default function RootLayout() {
     </BlinkProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  splash: {
+    flex: 1,
+    backgroundColor: brand.bg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

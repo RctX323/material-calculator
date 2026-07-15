@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { brand } from '@/constants/theme';
 import { useMeasureSystem } from '@/hooks/useWeightUnit';
 import { useCustomerInfo } from '@/lib/payments';
-import { router } from 'expo-router';
 
 interface SettingsRowProps {
   icon: string;
@@ -78,10 +78,11 @@ export default function SettingsScreen() {
     try {
       const Purchases = (await import('react-native-purchases')).default;
       const info = await Purchases.restorePurchases();
-      const restored = !!info?.entitlements?.active?.['Bid Pro Unlimited'];
+      const active = info?.entitlements?.active;
+      const restored = !!active && Object.keys(active).length > 0;
       Alert.alert(
         restored ? 'Purchases Restored' : 'Nothing to Restore',
-        restored ? 'Your subscription has been restored!' : "We didn't find any previous purchases on this account."
+        restored ? 'Your subscription has been restored!' : "We didn't find an active subscription on this Apple ID."
       );
     } catch (e: any) {
       Alert.alert('Restore Failed', e?.message ?? 'Something went wrong.');
@@ -102,25 +103,23 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Pro Status */}
+        {/* Subscription */}
         <SettingsSection title="SUBSCRIPTION">
           <SettingsRow
             icon="diamond"
-            label="Pro Status"
-            value={isPro ? 'Unlocked' : 'Free'}
+            label="Subscription"
+            value={isPro ? 'Active' : 'Inactive'}
             showArrow={false}
           />
-          {!isPro && (
-            <SettingsRow
-              icon="star-outline"
-              label="Unlock Pro"
-              onPress={() => router.push('/paywall' as never)}
-            />
-          )}
           <SettingsRow
             icon="refresh-outline"
             label={restoring ? 'Restoring...' : 'Restore Purchases'}
             onPress={handleRestore}
+          />
+          <SettingsRow
+            icon="card-outline"
+            label="Manage Subscription"
+            onPress={() => Linking.openURL('https://apps.apple.com/account/subscriptions')}
           />
         </SettingsSection>
 

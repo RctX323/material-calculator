@@ -43,13 +43,11 @@ import { MeasureSystemPicker } from '@/components/MeasureSystemPicker';
 import { useTruckType } from '@/hooks/useTruckType';
 import { router } from 'expo-router';
 import { useCalcStore } from '@/lib/calcStore';
-import { useCustomerInfo } from '@/lib/payments';
 
 const CALC_TYPES: CalculationType[] = ['gravel', 'dirt', 'asphalt', 'concrete_pad', 'footing'];
 
 export default function CalculatorScreen() {
   const queryClient = useQueryClient();
-  const { isPro } = useCustomerInfo();
   const { system, setSystem, unit } = useMeasureSystem();
   const { costUnit, setCostUnit } = useCostUnit(system);
   const [showSystemPicker, setShowSystemPicker] = useState(false);
@@ -466,26 +464,6 @@ export default function CalculatorScreen() {
               unit={`$ / ${effectiveCostUnit}`}
             />
           </View>
-
-          {/* Pro Banner — only show if not Pro */}
-          {!isPro && (
-            <TouchableOpacity
-              style={styles.proBanner}
-              activeOpacity={0.85}
-              onPress={() => router.push('/paywall' as never)}
-            >
-              <View style={styles.proBannerLeft}>
-                <Ionicons name="diamond" size={20} color="#000" />
-                <View>
-                  <Text style={styles.proBannerTitle}>BID PRO UNLIMITED</Text>
-                  <Text style={styles.proBannerSub}>Truck logistics, unlimited saves & more</Text>
-                </View>
-              </View>
-              <View style={styles.proBannerCta}>
-                <Text style={styles.proBannerCtaText}>UPGRADE</Text>
-              </View>
-            </TouchableOpacity>
-          )}
 
           {/* Calculate */}
           <TouchableOpacity style={styles.calcBtn} onPress={handleCalculate} activeOpacity={0.85}>

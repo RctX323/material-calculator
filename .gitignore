@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Expo
+.expo/
+**/.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+ios/
+android/
+*.orig.*
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Build artifacts / archives
+*.zip
+*.tgz
+*.log
+
+# OS
+.DS_Store
+*.pem
+
+# Editor
+.idea/
+.vscode/
