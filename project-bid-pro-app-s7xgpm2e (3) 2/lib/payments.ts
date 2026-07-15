@@ -8,14 +8,20 @@
 import { useState, useEffect } from 'react';
 import { Platform } from 'react-native';
 
+// RevenueCat PUBLIC api keys. These are safe to ship in the app binary
+// (that is what "public app-specific" keys are designed for). Env vars, when
+// set at build time, take precedence; otherwise we fall back to these.
+const REVENUECAT_IOS_KEY = 'appl_KJietmTaGYXOxdHYGAUpZHifguB';
+const REVENUECAT_ANDROID_KEY = ''; // add your Google Play key here if/when you ship Android
+
 export function getRevenueCatApiKey(): string | undefined {
   if (Platform.OS === 'web') return undefined;
   if (__DEV__ && process.env.EXPO_PUBLIC_REVENUECAT_TEST_API_KEY) {
     return process.env.EXPO_PUBLIC_REVENUECAT_TEST_API_KEY;
   }
   return Platform.select({
-    ios: process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
-    android: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY,
+    ios: process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY || REVENUECAT_IOS_KEY,
+    android: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY || REVENUECAT_ANDROID_KEY || undefined,
     default: undefined,
   });
 }
