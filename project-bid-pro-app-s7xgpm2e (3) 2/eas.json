@@ -1,0 +1,57 @@
+{
+  "cli": {
+    "version": ">= 13.2.0",
+    "appVersionSource": "remote",
+    "requireCommit": false
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "credentialsSource": "remote"
+      },
+      "android": {
+        "credentialsSource": "local"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false,
+        "credentialsSource": "remote"
+      },
+      "android": {
+        "credentialsSource": "local"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "node": "20.18.0",
+      "env": {
+        "EXPO_NO_TELEMETRY": "1"
+      },
+      "android": {
+        "credentialsSource": "local"
+      },
+      "ios": {
+        "credentialsSource": "remote"
+      }
+    },
+    "apk": {
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "local"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "devinstoshlee@outlook.com",
+        "ascAppId": "6767239250"
+      }
+    }
+  }
+}
