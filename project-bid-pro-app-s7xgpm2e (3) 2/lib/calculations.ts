@@ -75,11 +75,11 @@ export interface TruckType {
 }
 
 export const TRUCK_TYPES: TruckType[] = [
-  { id: 'tandem_truck',   label: 'Tandem End-Dump Truck',    shortLabel: 'Tandem E/D',   capacityTons: 17, capacityTonnesMetric: 15.4, description: '17 ton — tandem axle end-dump truck' },
-  { id: 'triaxle_truck',  label: 'Tri-Axle End-Dump Truck',  shortLabel: 'Tri-Axle E/D', capacityTons: 20, capacityTonnesMetric: 18.1, description: '20 ton — tri-axle end-dump truck' },
-  { id: 'tandem_trailer', label: 'Tandem End-Dump Trailer',  shortLabel: 'Tandem Trl',   capacityTons: 22, capacityTonnesMetric: 20.0, description: '22 ton — tandem axle end-dump trailer' },
-  { id: 'triaxle_belly',  label: 'Tri-Axle Belly Dump',      shortLabel: 'Tri Belly',    capacityTons: 25, capacityTonnesMetric: 22.7, description: '25 ton — tri-axle belly dump trailer' },
-  { id: 'tandem_utility', label: 'Tandem Utility Trailer',   shortLabel: 'Utility Trl',  capacityTons: 5,  capacityTonnesMetric: 4.5,  description: '5 ton — tandem axle utility trailer' },
+  { id: 'tandem_truck',   label: 'Tandem End-Dump Truck',    shortLabel: 'Tandem E/D',   capacityTons: 16.5, capacityTonnesMetric: 15,   description: '15 tonnes — tandem axle end-dump truck' },
+  { id: 'triaxle_truck',  label: 'Tridem End-Dump Truck',    shortLabel: 'Tridem E/D',   capacityTons: 26.5, capacityTonnesMetric: 24,   description: '24 tonnes — tridem end-dump truck' },
+  { id: 'tandem_trailer', label: 'Tandem End-Dump Trailer',  shortLabel: 'Tandem Trl',   capacityTons: 26.5, capacityTonnesMetric: 24,   description: '24 tonnes — tandem axle end-dump trailer' },
+  { id: 'triaxle_belly',  label: 'Tri-Axle Belly Dump',      shortLabel: 'Tri Belly',    capacityTons: 33.1, capacityTonnesMetric: 30,   description: '30 tonnes — tri-axle belly dump trailer' },
+  { id: 'tandem_utility', label: 'Tandem Utility Trailer',   shortLabel: 'Utility Trl',  capacityTons: 2.8,  capacityTonnesMetric: 2.5,  description: '2.5 tonnes — tandem axle utility trailer' },
 ];
 
 export const DEFAULT_TRUCK_ID = 'tandem_truck';
@@ -90,7 +90,7 @@ export const DEFAULT_TRUCK_ID = 'tandem_truck';
 // planner (bestAutoTruck) keeps using only the standard fleet. The personal
 // truck is used solely in "Personal" mode.
 export const PERSONAL_TRUCK_ID = 'personal_truck';
-export const DEFAULT_PERSONAL_TONS = 17;
+export const DEFAULT_PERSONAL_TONS = 16.5;
 export const MIN_PERSONAL_TONS = 0.5;
 export const MAX_PERSONAL_TONS = 60;
 
@@ -259,7 +259,7 @@ const roundUpHalfTon = (t: number) => Math.ceil(t * 2) / 2;
 // Round up to nearest 0.5 CY for ordering (concrete only)
 const roundUpHalfYard = (cy: number) => Math.ceil(cy * 2) / 2;
 
-export function calculateGravel(inputs: GravelInputs, compactionOverride?: number, truckTons = 17): CalculationResult {
+export function calculateGravel(inputs: GravelInputs, compactionOverride?: number, truckTons = 16.5): CalculationResult {
   const { length, width, depth } = inputs;
   const depthFt = depth / 12;
   const cubicFeet = length * width * depthFt;
@@ -283,7 +283,7 @@ export function calculateGravel(inputs: GravelInputs, compactionOverride?: numbe
   };
 }
 
-export function calculateDirt(inputs: DirtInputs, compactionOverride?: number, truckTons = 17): CalculationResult {
+export function calculateDirt(inputs: DirtInputs, compactionOverride?: number, truckTons = 16.5): CalculationResult {
   const { length, width, depth } = inputs;
   const depthFt = depth / 12;
   const cubicFeet = length * width * depthFt;
@@ -307,7 +307,7 @@ export function calculateDirt(inputs: DirtInputs, compactionOverride?: number, t
   };
 }
 
-export function calculateAsphalt(inputs: AsphaltInputs, truckTons = 17, compactionOverride?: number): CalculationResult {
+export function calculateAsphalt(inputs: AsphaltInputs, truckTons = 16.5, compactionOverride?: number): CalculationResult {
   const { length, width, depth } = inputs;
   const depthFt = depth / 12;
   const cubicFeet = length * width * depthFt;

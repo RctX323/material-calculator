@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { brand } from '@/constants/theme';
 import { useMeasureSystem } from '@/hooks/useWeightUnit';
+import { TRUCK_TYPES } from '@/lib/calculations';
 import { useCustomerInfo } from '@/lib/payments';
 
 interface SettingsRowProps {
@@ -210,12 +211,16 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         {/* Truck Reference */}
-        <SettingsSection title="TRUCK CAPACITIES (TONS PAYLOAD)">
-          <SettingsRow icon="construct-outline" label="Tandem End-Dump" value="17 tons" showArrow={false} />
-          <SettingsRow icon="construct-outline" label="Tri-Axle End-Dump" value="20 tons" showArrow={false} />
-          <SettingsRow icon="construct-outline" label="Tandem End-Dump Trailer" value="22 tons" showArrow={false} />
-          <SettingsRow icon="construct-outline" label="Tri-Axle Belly Dump" value="25 tons" showArrow={false} />
-          <SettingsRow icon="construct-outline" label="Tandem Utility Trailer" value="5 tons" showArrow={false} />
+        <SettingsSection title={`TRUCK CAPACITIES (${system === 'metric' ? 'TONNES' : 'TONS'} PAYLOAD)`}>
+          {TRUCK_TYPES.map(t => (
+            <SettingsRow
+              key={t.id}
+              icon="construct-outline"
+              label={t.label}
+              value={`${(system === 'metric' ? t.capacityTonnesMetric : t.capacityTons)} ${system === 'metric' ? 'tonnes' : 'tons'}`}
+              showArrow={false}
+            />
+          ))}
         </SettingsSection>
 
         {/* Formula Reference */}
