@@ -22,7 +22,7 @@ import { useTruckType } from '@/hooks/useTruckType';
  */
 export default function LogisticsScreen() {
   const pending = useCalcStore(s => s.pending);
-  const { truck, setTruckId } = useTruckType();
+  const { truck, setTruckId, personalTons, setPersonalTons } = useTruckType();
 
   // If user lands here without a pending result (deep link, refresh),
   // bounce them back to the calculator.
@@ -82,6 +82,9 @@ export default function LogisticsScreen() {
           autoTruck={autoTruck}
           onSelectTruck={setTruckId}
           selectedTruckId={truck.id}
+          selectedTruck={truck}
+          personalTons={personalTons}
+          onChangePersonalTons={setPersonalTons}
         />
       </ScrollView>
     </SafeAreaView>

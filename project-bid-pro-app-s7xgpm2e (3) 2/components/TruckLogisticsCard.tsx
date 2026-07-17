@@ -8,6 +8,7 @@ import {
   TruckType,
   AutoTruckResult,
   bestAutoTruck,
+  DEFAULT_PERSONAL_TONS,
 } from '@/lib/calculations';
 import { MeasureSystem, convertTons } from '@/hooks/useWeightUnit';
 import { TruckPickerSheet } from './TruckPickerSheet';
@@ -23,6 +24,12 @@ interface TruckLogisticsCardProps {
   autoTruck?: AutoTruckResult | null;
   onSelectTruck?: (truckId: string) => void;
   selectedTruckId?: string;
+  /** Fully-resolved selected truck (handles the synthesized Personal Truck) */
+  selectedTruck?: TruckType;
+  /** Personal-truck capacity in US short tons */
+  personalTons?: number;
+  /** Persist a new personal-truck capacity (US short tons) */
+  onChangePersonalTons?: (tons: number) => void;
 }
 
 export function TruckLogisticsCard({
@@ -33,6 +40,9 @@ export function TruckLogisticsCard({
   autoTruck: initialAutoTruck,
   onSelectTruck,
   selectedTruckId,
+  selectedTruck,
+  personalTons = DEFAULT_PERSONAL_TONS,
+  onChangePersonalTons,
 }: TruckLogisticsCardProps) {
   const [mode, setMode] = useState<'efficient' | 'personal'>('efficient');
   const [collapsed, setCollapsed] = useState(false);
@@ -42,9 +52,13 @@ export function TruckLogisticsCard({
   const autoTruck: AutoTruckResult | null =
     initialAutoTruck ?? (orderTons > 0 ? bestAutoTruck(orderTons) : null);
 
-  // Resolve the personal truck
+  // Resolve the personal truck. Prefer the fully-resolved truck passed in
+  // (which correctly handles the synthesized Personal Truck); otherwise fall
+  // back to matching a standard type by id.
   const personalTruck: TruckType =
-    TRUCK_TYPES.find(t => t.id === selectedTruckId) ?? TRUCK_TYPES[0];
+    selectedTruck ??
+    TRUCK_TYPES.find(t => t.id === selectedTruckId) ??
+    TRUCK_TYPES[0];
 
   // Order banner value
   const word = system === 'metric' ? 'tonnes' : 'tons';
@@ -148,6 +162,8 @@ export function TruckLogisticsCard({
           setPickerOpen(false);
         }}
         system={system}
+        personalTons={personalTons}
+        onChangePersonalTons={t => onChangePersonalTons?.(t)}
       />
     </View>
   );

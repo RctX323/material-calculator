@@ -97,4 +97,67 @@ export const pickerStyles = StyleSheet.create({
     backgroundColor: brand.orange,
   },
   sep: { height: 8 },
+
+  // ── Custom / Personal truck section ───────────────────────────────────
+  groupDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 16,
+    marginBottom: 10,
+  },
+  groupLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: brand.border,
+  },
+  groupLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+    color: brand.textTertiary,
+  },
+  capacityEditor: {
+    marginTop: 10,
+    backgroundColor: brand.bgElevated,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: brand.orange,
+    padding: 14,
+  },
+  capacityLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: brand.textSecondary,
+    marginBottom: 8,
+  },
+  capacityInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  capacityInput: {
+    flex: 1,
+    backgroundColor: brand.bgCard,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: brand.border,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 20,
+    fontWeight: '800',
+    color: brand.textPrimary,
+  },
+  capacityUnit: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: brand.textSecondary,
+    minWidth: 52,
+  },
+  capacityHint: {
+    fontSize: 11,
+    color: brand.textTertiary,
+    marginTop: 8,
+    lineHeight: 15,
+  },
 });

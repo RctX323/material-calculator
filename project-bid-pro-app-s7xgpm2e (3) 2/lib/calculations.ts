@@ -84,6 +84,36 @@ export const TRUCK_TYPES: TruckType[] = [
 
 export const DEFAULT_TRUCK_ID = 'tandem_truck';
 
+// ── Personal (custom-capacity) truck ─────────────────────────────────────────
+// A user-editable truck whose payload capacity is set by the contractor.
+// NOTE: intentionally NOT part of TRUCK_TYPES, so the "Efficient" auto-fleet
+// planner (bestAutoTruck) keeps using only the standard fleet. The personal
+// truck is used solely in "Personal" mode.
+export const PERSONAL_TRUCK_ID = 'personal_truck';
+export const DEFAULT_PERSONAL_TONS = 17;
+export const MIN_PERSONAL_TONS = 0.5;
+export const MAX_PERSONAL_TONS = 60;
+
+// US short tons ↔ metric tonnes
+export const SHORT_TON_TO_TONNE = 0.907185;
+export const shortTonsToTonnes = (t: number) => t * SHORT_TON_TO_TONNE;
+export const tonnesToShortTons = (t: number) => t / SHORT_TON_TO_TONNE;
+
+/** Build a Personal Truck type from a user-entered payload in US short tons. */
+export function makePersonalTruck(capacityTons: number): TruckType {
+  const cap = Number.isFinite(capacityTons) && capacityTons > 0
+    ? capacityTons
+    : DEFAULT_PERSONAL_TONS;
+  return {
+    id: PERSONAL_TRUCK_ID,
+    label: 'Personal Truck',
+    shortLabel: 'My Truck',
+    capacityTons: cap,
+    capacityTonnesMetric: +shortTonsToTonnes(cap).toFixed(1),
+    description: 'Custom capacity — your own truck',
+  };
+}
+
 /** A single truck type and how many of it are in the fleet */
 export interface FleetEntry {
   truckId: string;
